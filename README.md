@@ -135,3 +135,73 @@ Found 4 matches
 - Search is no longer limited to archives and now includes every visited file
 - Added support for searching a specified string in visited files
 - Switched to JDK logging so log4j.jar is no longer required (smaller distribution)
+
+
+## Main Method Sequence Diagrams
+
+The following Mermaid diagrams describe the main entry points found in the source code under `src/`.
+
+### `org.javatb.search.Search`
+
+```mermaid
+sequenceDiagram
+    participant SearchMain as Search.main
+    participant SearchEngine as SearchEngine
+    participant Listener as SearchEngineListener
+    participant Console as System.out
+
+    SearchMain->>SearchMain: validate args
+    SearchMain->>SearchEngine: new SearchEngine(params)
+    SearchMain->>SearchEngine: addSearchEngineListener(listener)
+    SearchMain->>SearchEngine: search()
+    SearchEngine->>Listener: newMessage(event)
+    Listener->>Console: println(event.searchElement())
+    SearchMain->>SearchMain: print summary result
+```
+
+
+### `org.javatb.search.ui.UILauncher`
+
+```mermaid
+sequenceDiagram
+    participant JVM as JVM
+    participant UIManager as UIManager
+    participant Frame as JFrame
+    participant Launcher as UILauncher
+    participant Persistence as FramePersistenceHandler
+
+    JVM->>Launcher: invoke main(args)
+    Launcher->>UIManager: setLookAndFeel(...)
+    Launcher->>Frame: new JFrame("Find4j")
+    Launcher->>Frame: setIconImage(...)
+    Launcher->>Frame: setDefaultCloseOperation(...)
+    Launcher->>Launcher: new UILauncher(rootPath)
+    Launcher->>Launcher: createUI()
+    Launcher->>Frame: getRootPane()
+    Launcher->>Frame: add(comp)
+    Launcher->>Persistence: new FramePersistenceHandler("main.frame", frame)
+    Launcher->>Frame: setVisible(true)
+```
+
+
+### `org.javatb.util.HtmlDocGenerator`
+
+```mermaid
+sequenceDiagram
+    participant JVM as JVM
+    participant Main as HtmlDocGenerator.main
+    participant Console as System.out
+    participant DocGen as HtmlDocGenerator
+    participant File as File
+
+    JVM->>Main: invoke main(args)
+    Main->>Main: validate args
+    Main->>File: create sourceDir, targetDir, templateDir
+    Main->>Console: println("Generating web pages:")
+    Main->>DocGen: new HtmlDocGenerator()
+    Main->>File: listFiles(filter)
+    loop per HTML file
+        Main->>DocGen: generatePage(source, target, template)
+    end
+    Main->>Console: println("Pages successfully generated")
+```
