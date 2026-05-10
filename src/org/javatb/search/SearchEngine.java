@@ -74,7 +74,7 @@ public class SearchEngine {
     String s = "".equals(args[1].trim()) ? "*" : args[1];
     filePattern = stringToPattern(s);
     if ((args.length > 2) && (args[2] != null) && !"".equals(args[2].trim())) {
-      contentPattern = Pattern.compile(args[2], Pattern.LITERAL | Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+      contentPattern = Pattern.compile(args[2],  Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
   }
 
